@@ -35,11 +35,11 @@ Note: `pyarrow<19` is required because the environment uses NumPy 1.x.
 
 1. Inspect the dataset (optional):
    ```bash
-   python inspect_raid.py data/train.csv
+   python src/inspect_raid.py data/train.csv
    ```
 2. Build leakage-free, class-balanced splits (seed 42):
    ```bash
-   python make_splits.py --raid data/train.csv --out data/processed --seed 42
+   python src/make_splits.py --raid data/train.csv --out data/processed --seed 42
    ```
 
 More steps will be added as the experiments are implemented.
