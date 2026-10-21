@@ -21,6 +21,7 @@ import time
 from pathlib import Path
 
 import pandas as pd
+import pyarrow  # noqa: F401  - fail fast here, not after a 15-minute run
 from sklearn.model_selection import train_test_split
 
 # ---------------------------------------------------------------------------
@@ -108,9 +109,9 @@ def main():
             clean | ((c["split"] == "train") & c["attack"].isin(SEEN_ATTACKS)))
 
         # test: all clean rows (seen, held-out, penalty conditions) +
-        # held-out-attack versions of humans and seen generators
+        # seen- and held-out-attack versions of humans and seen generators
         test = c["split"] == "test"
-        m_test = test & (clean | (c["attack"].isin(HELDOUT_ATTACKS)
+        m_test = test & (clean | (c["attack"].isin(SEEN_ATTACKS + HELDOUT_ATTACKS)
                                   & (is_human | seen_ai_no_pen)))
         keep.append(c[m_trval | m_test])
     meta = pd.concat(keep, ignore_index=True)
@@ -154,10 +155,14 @@ def main():
         print("  WARNING: low coverage - check that adv_source_id links attacked "
               "rows to their clean original.")
 
-    # Robustness test: ALL held-out-attack versions of the test_seen rows
+    # Robustness tests: ALL attack versions of the test_seen rows.
+    # test_seen_attacks   -> attacks used in augmentation (does augmentation work?)
+    # test_heldout_attacks -> attacks never trained on (does robustness transfer?)
+    in_test_seen = att["adv_source_id"].isin(sets["test_seen"]["id"])
+    sets["test_seen_attacks"] = att[
+        in_test_seen & att["attack"].isin(SEEN_ATTACKS)].reset_index(drop=True)
     sets["test_heldout_attacks"] = att[
-        att["adv_source_id"].isin(sets["test_seen"]["id"])
-        & att["attack"].isin(HELDOUT_ATTACKS)].reset_index(drop=True)
+        in_test_seen & att["attack"].isin(HELDOUT_ATTACKS)].reset_index(drop=True)
 
     # -----------------------------------------------------------------------
     # Pass 3: attach the texts

@@ -62,6 +62,3 @@ configs/     seeds and hyperparameters
 results/     metrics and figures
 ```
 
-## AI usage
-
-Code in this repository was produced with the help of Claude (Anthropic), as declared on the project's AI acknowledgement cover sheet.
