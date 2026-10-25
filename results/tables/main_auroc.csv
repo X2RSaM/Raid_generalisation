@@ -1,0 +1,5 @@
+Detector,Seen gen.,Held-out gen.,Rep. penalty,Seen attacks,Held-out attacks
+Baseline,76.6 ± 0.0,67.5 ± 0.0,23.4 ± 0.0,75.4 ± 0.0,76.8 ± 0.0
+TF-IDF (word),95.0 ± 0.0,95.8 ± 0.0,70.4 ± 0.0,93.6 ± 0.0,80.0 ± 0.0
+TF-IDF (word+char),96.1 ± 0.0,96.5 ± 0.0,73.7 ± 0.0,94.6 ± 0.0,82.5 ± 0.0
+RoBERTa,99.9 ± 0.0,99.5 ± 0.1,96.0 ± 0.4,98.4 ± 0.1,88.9 ± 0.5

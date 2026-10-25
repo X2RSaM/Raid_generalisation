@@ -1,0 +1,5 @@
+length,Texts (AI),Texts (Human),TF-IDF error % (AI),TF-IDF error % (Human),RoBERTa error % (AI),RoBERTa error % (Human)
+<100,541,60,16.1,45.0,2.6,15.0
+100-199,1783,2112,24.1,9.1,4.0,4.7
+200-399,3306,2982,30.3,2.6,4.4,2.4
+400+,388,864,38.9,1.0,7.5,4.2

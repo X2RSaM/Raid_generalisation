@@ -1,0 +1,16 @@
+\begin{table}[!t]
+\centering
+\caption{AUROC (×100) by test condition, no augmentation}
+\label{tab:main_auroc}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Detector} & \textbf{Seen gen.} & \textbf{Held-out gen.} & \textbf{Rep. penalty} & \textbf{Seen attacks} & \textbf{Held-out attacks} \\
+\midrule
+Baseline & 76.6 $\pm$ 0.0 & 67.5 $\pm$ 0.0 & 23.4 $\pm$ 0.0 & 75.4 $\pm$ 0.0 & 76.8 $\pm$ 0.0 \\
+TF-IDF (word) & 95.0 $\pm$ 0.0 & 95.8 $\pm$ 0.0 & 70.4 $\pm$ 0.0 & 93.6 $\pm$ 0.0 & 80.0 $\pm$ 0.0 \\
+TF-IDF (word+char) & 96.1 $\pm$ 0.0 & 96.5 $\pm$ 0.0 & 73.7 $\pm$ 0.0 & 94.6 $\pm$ 0.0 & 82.5 $\pm$ 0.0 \\
+RoBERTa & 99.9 $\pm$ 0.0 & 99.5 $\pm$ 0.1 & 96.0 $\pm$ 0.4 & 98.4 $\pm$ 0.1 & 88.9 $\pm$ 0.5 \\
+\bottomrule
+\end{tabular}
+\end{table}

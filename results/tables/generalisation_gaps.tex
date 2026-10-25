@@ -1,0 +1,16 @@
+\begin{table}[!t]
+\centering
+\caption{Generalisation gaps relative to seen generators (no augmentation)}
+\label{tab:generalisation_gaps}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Detector} & \textbf{Seen} & \textbf{Held-out gen.} & \textbf{Gap held-out (pp)} & \textbf{Missed-AI ratio held-out} & \textbf{Gap rep. penalty (pp)} \\
+\midrule
+Baseline & 33.3 & 22.13 & 11.17 & 1.17 & 30.96 \\
+TF-IDF (word) & 78.51 & 83.6 & -5.08 & 0.76 & 34.65 \\
+TF-IDF (word+char) & 82.1 & 85.14 & -3.04 & 0.83 & 32.55 \\
+RoBERTa & 99.45 & 97.96 & 1.5 & 3.73 & 8.99 \\
+\bottomrule
+\end{tabular}
+\end{table}

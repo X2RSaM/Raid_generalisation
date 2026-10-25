@@ -1,0 +1,12 @@
+generator,Split,Type,RoBERTa,TF-IDF (word+char)
+cohere,seen,base,98.9,64.8
+gpt2,seen,base,99.6,81.5
+gpt3,seen,base,100.0,83.4
+mistral,seen,base,98.3,68.5
+chatgpt,seen,chat,100.0,96.9
+cohere-chat,seen,chat,99.0,81.0
+mistral-chat,seen,chat,100.0,97.1
+mpt,held-out,base,91.1,68.3
+gpt4,held-out,chat,100.0,80.7
+llama-chat,held-out,chat,100.0,96.6
+mpt-chat,held-out,chat,99.8,95.9

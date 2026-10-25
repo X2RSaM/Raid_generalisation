@@ -1,0 +1,12 @@
+model,type,split,texts,median_words,median_rep_ratio
+mpt,base,held-out,504,363.0,0.544
+gpt4,chat,held-out,523,292.0,0.391
+llama-chat,chat,held-out,493,285.0,0.449
+mpt-chat,chat,held-out,486,143.0,0.362
+cohere,base,seen,1279,210.0,0.4
+gpt2,base,seen,1339,360.0,0.595
+gpt3,base,seen,1371,117.0,0.365
+mistral,base,seen,1311,315.0,0.527
+chatgpt,chat,seen,1335,272.0,0.406
+cohere-chat,chat,seen,1355,172.0,0.388
+mistral-chat,chat,seen,1369,201.0,0.411

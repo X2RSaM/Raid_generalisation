@@ -1,2 +1,6 @@
 data/
 test.parquet
+results/smoke/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store

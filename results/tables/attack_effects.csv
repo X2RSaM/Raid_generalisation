@@ -1,0 +1,12 @@
+attack,seen_in_training,texts_changed,median_word_ratio,median_char_ratio,with_non_ascii
+alternative_spelling,True,0.618,1.0,1.0,0.234
+article_deletion,True,0.977,0.961,0.978,0.234
+number,True,0.506,1.0,1.0,0.234
+paraphrase,True,1.0,0.907,0.881,0.49
+perplexity_misspelling,True,0.737,1.0,1.0,0.234
+synonym,True,0.999,1.0,0.998,0.241
+homoglyph,False,1.0,1.0,1.0,1.0
+insert_paragraphs,False,0.958,1.0,1.006,0.234
+upper_lower,False,0.999,1.0,1.0,0.234
+whitespace,False,1.0,1.0,1.033,0.234
+zero_width_space,False,1.0,1.0,2.0,1.0

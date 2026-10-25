@@ -1,0 +1,20 @@
+\begin{table}[!t]
+\centering
+\caption{Experiment sets built from RAID (balanced per source document)}
+\label{tab:split_sizes}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Set} & \textbf{Texts} & \textbf{AI} & \textbf{Human} & \textbf{Generators} & \textbf{Attacks} \\
+\midrule
+train\_clean & 18718 & 9359 & 9359 & 7 & 0 \\
+train\_attacked & 18718 & 9359 & 9359 & 7 & 6 \\
+val & 4012 & 2006 & 2006 & 7 & 0 \\
+test\_seen & 4012 & 2006 & 2006 & 7 & 0 \\
+test\_unseen & 4012 & 2006 & 2006 & 4 & 0 \\
+test\_reppen & 4012 & 2006 & 2006 & 3 & 0 \\
+test\_seen\_attacks & 24072 & 12036 & 12036 & 7 & 6 \\
+test\_heldout\_attacks & 20060 & 10030 & 10030 & 7 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}

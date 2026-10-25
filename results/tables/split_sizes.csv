@@ -1,0 +1,9 @@
+Set,Texts,AI,Human,Generators,Attacks
+train_clean,18718,9359,9359,7,0
+train_attacked,18718,9359,9359,7,6
+val,4012,2006,2006,7,0
+test_seen,4012,2006,2006,7,0
+test_unseen,4012,2006,2006,4,0
+test_reppen,4012,2006,2006,3,0
+test_seen_attacks,24072,12036,12036,7,6
+test_heldout_attacks,20060,10030,10030,7,5

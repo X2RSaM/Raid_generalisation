@@ -1,0 +1,16 @@
+\begin{table}[!t]
+\centering
+\caption{Error rate (\%) by text length in words}
+\label{tab:errors_by_length}
+\footnotesize
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{length} & \textbf{Texts (AI)} & \textbf{Texts (Human)} & \textbf{TF-IDF error \% (AI)} & \textbf{TF-IDF error \% (Human)} & \textbf{RoBERTa error \% (AI)} & \textbf{RoBERTa error \% (Human)} \\
+\midrule
+<100 & 541 & 60 & 16.1 & 45.0 & 2.6 & 15.0 \\
+100-199 & 1783 & 2112 & 24.1 & 9.1 & 4.0 & 4.7 \\
+200-399 & 3306 & 2982 & 30.3 & 2.6 & 4.4 & 2.4 \\
+400+ & 388 & 864 & 38.9 & 1.0 & 7.5 & 4.2 \\
+\bottomrule
+\end{tabular}
+\end{table}

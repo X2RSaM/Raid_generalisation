@@ -1,0 +1,7 @@
+condition,class,both correct,only TF-IDF wrong,only RoBERTa wrong,both wrong
+Held-out gen.,AI,1691,269,17,29
+Held-out gen.,Human,1844,90,60,12
+Rep. penalty,AI,983,819,11,193
+Rep. penalty,Human,1844,90,60,12
+Seen gen.,AI,1642,352,5,7
+Seen gen.,Human,1844,90,60,12

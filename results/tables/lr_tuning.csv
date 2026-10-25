@@ -1,0 +1,4 @@
+lr,best_epoch,val_auroc,selected
+1e-05,2,99.76,
+2e-05,2,99.79,yes
+3e-05,2,99.78,

@@ -1,0 +1,17 @@
+\begin{table}[!t]
+\centering
+\caption{Effect of the augmentation proportion (TPR and AUROC, \%)}
+\label{tab:augmentation}
+\footnotesize
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{detector} & \textbf{aug} & \textbf{Seen gen. TPR} & \textbf{Seen gen. AUROC} & \textbf{Seen attacks TPR} & \textbf{Seen attacks AUROC} & \textbf{Held-out attacks TPR} & \textbf{Held-out attacks AUROC} \\
+\midrule
+RoBERTa & 0.0 & 99.5 $\pm$ 0.0 & 99.9 $\pm$ 0.0 & 96.2 $\pm$ 0.6 & 98.4 $\pm$ 0.1 & 95.0 $\pm$ 1.5 & 88.9 $\pm$ 0.5 \\
+RoBERTa & 0.5 & 99.4 $\pm$ 0.2 & 99.9 $\pm$ 0.0 & 98.4 $\pm$ 0.2 & 99.4 $\pm$ 0.0 & 91.4 $\pm$ 1.6 & 88.2 $\pm$ 1.5 \\
+TF-IDF (word+char) & 0.0 & 82.1 $\pm$ 0.0 & 96.1 $\pm$ 0.0 & 79.2 $\pm$ 0.0 & 94.6 $\pm$ 0.0 & 88.6 $\pm$ 0.0 & 82.5 $\pm$ 0.0 \\
+TF-IDF (word+char) & 0.25 & 81.7 $\pm$ 0.2 & 96.0 $\pm$ 0.0 & 79.3 $\pm$ 0.0 & 94.6 $\pm$ 0.0 & 88.2 $\pm$ 0.1 & 82.3 $\pm$ 0.1 \\
+TF-IDF (word+char) & 0.5 & 81.6 $\pm$ 0.1 & 95.8 $\pm$ 0.0 & 79.4 $\pm$ 0.2 & 94.5 $\pm$ 0.0 & 88.1 $\pm$ 0.3 & 82.0 $\pm$ 0.1 \\
+\bottomrule
+\end{tabular}
+\end{table}

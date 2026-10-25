@@ -1,0 +1,18 @@
+\begin{table}[!t]
+\centering
+\caption{Error overlap between TF-IDF (word+char) and RoBERTa, seed 42}
+\label{tab:error_agreement}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{condition} & \textbf{class} & \textbf{both correct} & \textbf{only TF-IDF wrong} & \textbf{only RoBERTa wrong} & \textbf{both wrong} \\
+\midrule
+Held-out gen. & AI & 1691 & 269 & 17 & 29 \\
+Held-out gen. & Human & 1844 & 90 & 60 & 12 \\
+Rep. penalty & AI & 983 & 819 & 11 & 193 \\
+Rep. penalty & Human & 1844 & 90 & 60 & 12 \\
+Seen gen. & AI & 1642 & 352 & 5 & 7 \\
+Seen gen. & Human & 1844 & 90 & 60 & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}

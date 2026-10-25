@@ -1,0 +1,16 @@
+\begin{table}[!t]
+\centering
+\caption{Training time, inference throughput and model size}
+\label{tab:efficiency}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Detector} & \textbf{Hardware} & \textbf{Train time (s)} & \textbf{Inference (texts/s)} & \textbf{Size (MB)} & \textbf{Parameters / features} \\
+\midrule
+Baseline & arm64 CPU (10 cores) & 0.3 & 64257 & 0.0 & 2 \\
+TF-IDF (word) & arm64 CPU (10 cores) & 4.5 & 8621 & 31.89 & 200,000 \\
+TF-IDF (word+char) & arm64 CPU (10 cores) & 18.0 & 1618 & 45.94 & 400,000 \\
+RoBERTa & Tesla T4 & 1087.7 & 185 & 498.59 & 124,647,170 \\
+\bottomrule
+\end{tabular}
+\end{table}

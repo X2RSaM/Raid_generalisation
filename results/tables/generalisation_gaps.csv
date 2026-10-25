@@ -1,0 +1,5 @@
+Detector,Seen,Held-out gen.,Gap held-out (pp),Missed-AI ratio held-out,Gap rep. penalty (pp)
+Baseline,33.3,22.13,11.17,1.17,30.96
+TF-IDF (word),78.51,83.6,-5.08,0.76,34.65
+TF-IDF (word+char),82.1,85.14,-3.04,0.83,32.55
+RoBERTa,99.45,97.96,1.5,3.73,8.99

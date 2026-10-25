@@ -1,0 +1,30 @@
+{
+ "device": "cuda",
+ "gpu": "Tesla T4",
+ "torch": "2.11.0+cu128",
+ "python": "3.13.15",
+ "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+ "data": "data/processed",
+ "out": "results",
+ "model_name": "roberta-base",
+ "aug": [
+  0.0,
+  0.5
+ ],
+ "seeds": [
+  42,
+  43,
+  44
+ ],
+ "lrs": [
+  2e-05
+ ],
+ "epochs": 2,
+ "batch": 8,
+ "accum": 2,
+ "eval_batch": 64,
+ "max_len": 512,
+ "limit": 0,
+ "log_every": 50,
+ "tune_only": false
+}

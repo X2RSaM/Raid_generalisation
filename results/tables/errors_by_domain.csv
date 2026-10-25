@@ -1,0 +1,9 @@
+domain,TF-IDF error % (AI),TF-IDF error % (Human),RoBERTa error % (AI),RoBERTa error % (Human)
+abstracts,29.6,4.2,0.8,0.0
+books,23.6,3.7,4.5,11.2
+news,31.0,2.6,6.1,1.5
+poetry,27.6,3.0,4.8,0.4
+recipes,17.3,0.0,4.3,0.4
+reddit,31.5,11.2,4.2,6.7
+reviews,22.7,9.2,5.0,2.8
+wiki,36.3,8.6,5.5,5.2

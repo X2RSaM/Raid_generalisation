@@ -1,0 +1,16 @@
+\begin{table}[!t]
+\centering
+\caption{Observed FPR (\%) on human test texts at the validation threshold}
+\label{tab:main_fpr}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Detector} & \textbf{Seen gen.} & \textbf{Held-out gen.} & \textbf{Rep. penalty} & \textbf{Seen attacks} & \textbf{Held-out attacks} \\
+\midrule
+Baseline & 4.7 $\pm$ 0.0 & 4.7 $\pm$ 0.0 & 4.7 $\pm$ 0.0 & 5.5 $\pm$ 0.0 & 4.4 $\pm$ 0.0 \\
+TF-IDF (word) & 4.4 $\pm$ 0.0 & 4.4 $\pm$ 0.0 & 4.4 $\pm$ 0.0 & 5.5 $\pm$ 0.0 & 35.8 $\pm$ 0.0 \\
+TF-IDF (word+char) & 5.1 $\pm$ 0.0 & 5.1 $\pm$ 0.0 & 5.1 $\pm$ 0.0 & 6.3 $\pm$ 0.0 & 38.0 $\pm$ 0.0 \\
+RoBERTa & 4.3 $\pm$ 0.6 & 4.3 $\pm$ 0.6 & 4.3 $\pm$ 0.6 & 7.4 $\pm$ 0.1 & 39.8 $\pm$ 2.1 \\
+\bottomrule
+\end{tabular}
+\end{table}

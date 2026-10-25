@@ -27,6 +27,7 @@ Source and licence: https://github.com/liamdugan/raid
 conda create -n raid python=3.11 -y
 conda activate raid
 pip install -r requirements.txt
+pip install matplotlib jupyter   # for the analysis notebooks
 ```
 
 Note: `pyarrow<19` is required because the environment uses NumPy 1.x.
@@ -42,7 +43,34 @@ Note: `pyarrow<19` is required because the environment uses NumPy 1.x.
    python src/make_splits.py --raid data/train.csv --out data/processed --seed 42
    ```
 
-More steps will be added as the experiments are implemented.
+3. Simple baseline and TF-IDF experiments (CPU, about 10 minutes):
+   ```bash
+   python src/train_classical.py
+   ```
+4. RoBERTa experiments (NVIDIA GPU, e.g. a Kaggle T4; about 4 hours):
+   ```bash
+   # learning-rate tuning on validation AUROC (seed 42, no augmentation)
+   python src/train_roberta.py --seeds 42 --aug 0 --lrs 1e-5 2e-5 3e-5
+   # main runs with the selected learning rate (2e-5 in our runs)
+   python src/train_roberta.py --lrs 2e-5
+   ```
+   Finished runs are skipped on restart. Fine-tuning at 512 tokens did not fit in the
+   memory of a 16 GB MacBook Air, so these runs were done on Kaggle.
+5. Analysis notebooks (run in order from the `notebooks/` folder):
+   - `01_eda.ipynb`: split sizes, leakage check, text statistics, attack effects
+   - `02_results.ipynb`: all result tables and figures
+   - `03_error_analysis.ipynb`: error overlap, error rates, attack examples, and the
+     sample of errors exported for manual coding
+
+   Figures are saved to `results/figures/` (PDF and PNG) and tables to
+   `results/tables/` (CSV and LaTeX).
+
+## Random seeds
+
+- Data splits and AI-text sampling: seed 42 (`make_splits.py`)
+- Model training and augmentation sampling: seeds 42, 43, 44
+- The classical models are deterministic without augmentation, so their seed
+  variation comes only from augmentation sampling.
 
 ## Experimental design
 
@@ -57,8 +85,11 @@ More steps will be added as the experiments are implemented.
 ```
 data/        raw and processed data (not tracked by Git)
 notebooks/   exploration
-src/         scripts
+src/         scripts (splits, training, metrics, report helpers)
 configs/     seeds and hyperparameters
 results/     metrics and figures
 ```
 
+## AI usage
+
+Code in this repository was produced with the help of Claude (Anthropic), as declared on the project's AI acknowledgement cover sheet.
