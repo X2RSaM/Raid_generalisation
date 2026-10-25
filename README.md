@@ -232,7 +232,4 @@ can simply be restarted. A quick check before the long run:
 - Y. Liu *et al.*, "RoBERTa: A robustly optimized BERT pretraining approach,"
   arXiv:1907.11692, 2019.
 
-## AI usage
 
-Code in this repository was produced with the help of Claude (Anthropic), as declared
-on the project's AI acknowledgement cover sheet.
