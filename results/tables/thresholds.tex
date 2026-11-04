@@ -1,0 +1,19 @@
+\begin{table}[!t]
+\centering
+\caption{Decision thresholds (5\% validation FPR) per run}
+\label{tab:thresholds}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{detector} & \textbf{aug} & \textbf{seed} & \textbf{best\_epoch} & \textbf{threshold} & \textbf{val\_auroc} \\
+\midrule
+Binoculars (zero-shot) & 0.0 & 42 & nan & -0.9378 & 0.9389 \\
+RoBERTa & 0.0 & 42 & 2.0 & 0.9545 & 0.9979 \\
+RoBERTa & 0.0 & 43 & 1.0 & 0.004 & 0.9982 \\
+RoBERTa & 0.0 & 44 & 2.0 & 0.3471 & 0.998 \\
+RoBERTa & 0.5 & 42 & 2.0 & 0.9725 & 0.9979 \\
+RoBERTa & 0.5 & 43 & 2.0 & 0.9891 & 0.9975 \\
+RoBERTa & 0.5 & 44 & 2.0 & 0.9565 & 0.9983 \\
+\bottomrule
+\end{tabular}
+\end{table}

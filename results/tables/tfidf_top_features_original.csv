@@ -1,0 +1,51 @@
+direction,rank,feature,weight
+AI,1,char: ' > ',9.832
+AI,2,char: ' a ',5.863
+AI,3,char: '## ',5.318
+AI,4,char: ' ##',5.318
+AI,5,word: instructions,5.205
+AI,6,word: ingredients,5.047
+AI,7,word: and the,4.912
+AI,8,char: 's: ',4.608
+AI,9,word: that the,4.406
+AI,10,char: ' ## ',4.251
+AI,11,char: '2. ',3.88
+AI,12,word: the paper,3.868
+AI,13,word: abstract,3.785
+AI,14,word: the film,3.764
+AI,15,word: novel by,3.751
+AI,16,word: there are,3.681
+AI,17,char: '1. ',3.658
+AI,18,word: not sure,3.494
+AI,19,word: is based,3.476
+AI,20,word: show that,3.425
+AI,21,word: recipe,3.415
+AI,22,word: paper,3.302
+AI,23,word: who is,3.264
+AI,24,word: known for,3.258
+AI,25,char: 'he ',3.245
+human,1,word: in,-5.739
+human,2,word: and,-5.717
+human,3,word: br,-5.644
+human,4,word: at,-5.606
+human,5,char: 'ly ',-5.204
+human,6,word: to,-4.879
+human,7,word: of,-4.858
+human,8,word: an,-4.162
+human,9,word: all,-4.102
+human,10,char: ' � ',-3.979
+human,11,char: '...',-3.915
+human,12,word: the book,-3.908
+human,13,word: br br,-3.745
+human,14,word: one,-3.676
+human,15,word: the,-3.481
+human,16,word: image segmentation,-3.45
+human,17,char: 'aaaa',-3.422
+human,18,char: '.. ',-3.39
+human,19,word: me,-3.382
+human,20,char: ' . ',-3.245
+human,21,word: as,-3.194
+human,22,word: under,-3.152
+human,23,word: out,-3.136
+human,24,word: with,-3.126
+human,25,word: his,-3.108

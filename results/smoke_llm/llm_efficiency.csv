@@ -1,0 +1,2 @@
+model,aug,seed,lr,best_epoch,val_auroc,threshold,train_time_s,infer_texts_per_s,model_size_mb,adapter_size_mb,n_params,n_trainable_params,peak_gpu_mem_gb,train_truncated_share
+Qwen2.5-0.5B,0.0,42,0.0001,1,0.8526385688684075,0.7965888728550194,58.466233089999946,28.53173249917252,2011.33824,35.2,502834560,8800000,10.530510336,0.092

@@ -5,6 +5,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-RoBERTa-EE4C2C?logo=pytorch&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-TF--IDF-F7931E?logo=scikitlearn&logoColor=white)
+![LLM](https://img.shields.io/badge/LLM-Qwen2.5%20%2B%20LoRA-6250d6)
 ![Dataset](https://img.shields.io/badge/Dataset-RAID%20(ACL%202024)-4B8BBE)
 
 MSc in Artificial Intelligence · National College of Ireland · Machine Learning project
@@ -18,10 +19,17 @@ AI-text detectors are used to flag machine-written essays, spam and misinformati
 but they are usually tested on the same kind of text they were trained on. The
 [RAID benchmark](https://github.com/liamdugan/raid) showed that off-the-shelf
 detectors break on unfamiliar AI models and simple tricks, but it never trained
-detectors under **controlled** conditions. This project does: it trains three
+detectors under **controlled** conditions. This project does: it trains several
 detectors on RAID, hides some AI models and some attack types during training, and
 measures what happens on the hidden ones. It also tests whether **training on
-attacked text** (adversarial augmentation) makes detectors harder to fool.
+attacked text** (adversarial augmentation) makes detectors harder to fool,
+compares the trained detectors with a **fine-tuned LLM** and a **zero-shot LLM
+detector** that never sees any training data, and checks whether very high scores
+come from real writing style or from **shortcuts** such as formatting.
+
+All approaches here work **without watermarks**: they judge the finished text only,
+either by learning patterns from labelled examples (TF-IDF, RoBERTa, Qwen) or by
+measuring how predictable the text is to an LLM (Binoculars).
 
 > **Research question:** How much does the accuracy at a 5% false positive rate of
 > TF-IDF and RoBERTa detectors drop when tested on unseen generators and held-out
@@ -38,6 +46,11 @@ attacked text** (adversarial augmentation) makes detectors harder to fool.
 | ⚖️ | **Generator type matters as much as being unseen.** Base models are hard and chat models easy for both detectors, so averaging over a mixed set of generators can hide generalisation gaps. |
 | 🛡️ | **Adversarial augmentation works only on attacks it has seen.** For RoBERTa it lifts paraphrase detection from 81.5% to 95.3%, but it does nothing for attacks it never trained on. |
 | ⚠️ | **Each detector has its own blind spots.** Homoglyphs make TF-IDF flag 75% of human texts; inserted paragraph breaks make RoBERTa flag 97%; zero-width spaces break both. |
+| 🔭 | **A zero-shot LLM detector (Binoculars) catches 79.9% of AI texts with no training at all**, close to TF-IDF (82.1%) but far below RoBERTa. |
+| 🔀 | **Trained and zero-shot detectors fail in opposite ways.** Trained detectors learn dataset shortcuts (inserted blank lines make RoBERTa flag 97% of human texts; Binoculars only 4%). Binoculars instead fails when text is made *less predictable*: repetition penalty (42.9%), synonym swaps (32.2%), homoglyphs (35.5%). |
+| 🧩 | **Part of the very high scores rests on dataset shortcuts.** No human training text contains a blank line, but 70–100% of AI texts do; markdown (`##`, `1.`) points to AI, and scraping leftovers (`<br />`, broken `�` characters) point to human. |
+| 🧹 | **Removing these clues barely changes TF-IDF** (82.1% → 80.9%), so it mostly uses real wording, and it **fully neutralises the held-out attacks** for TF-IDF at no training cost, unlike augmentation. The same check for RoBERTa is in progress. |
+| 🧪 | **In progress:** a LoRA fine-tuned Qwen2.5-0.5B (learning rate 1e-4 chosen on validation; main runs on Kaggle) and RoBERTa retrained on cleaned text. |
 | 💻 | **RoBERTa's accuracy has a real cost**: ~18 min of GPU training and a 499 MB model, vs about a minute on a laptop CPU for TF-IDF. Fine-tuning RoBERTa did not fit in a 16 GB laptop's memory. |
 
 ---
@@ -51,10 +64,13 @@ flowchart LR
     C --> D1[Simple baseline<br/>length + repetition]
     C --> D2[TF-IDF +<br/>logistic regression]
     C --> D3[Fine-tuned<br/>RoBERTa-base]
+    C --> D4[Qwen2.5-0.5B<br/>+ LoRA]
+    Z[Binoculars<br/>zero-shot, no training] --> T
     C -. attacked copies .-> AUG[Adversarial<br/>augmentation<br/>0 / 25 / 50%]
     AUG --> D2
     AUG --> D3
-    D1 & D2 & D3 --> T[Threshold at 5% FPR<br/>on validation humans]
+    AUG --> D4
+    D1 & D2 & D3 & D4 --> T[Threshold at 5% FPR<br/>on validation humans]
     T --> E1[Seen generators]
     T --> E2[Held-out generators]
     T --> E3[Repetition penalty]
@@ -85,10 +101,13 @@ accusing a person of using AI is the costly mistake, so it is the one we control
 | TF-IDF (word) | 78.5 | 83.6 | 43.9 | 75.3 |
 | TF-IDF (word+char) | 82.1 | 85.1 | 49.6 | 79.2 |
 | **RoBERTa** | **99.5** | **98.0** | **90.5** | **96.2** |
+| Binoculars (zero-shot, no training) | 79.9 | 74.0 | 42.9 | 67.5 |
+| Qwen2.5-0.5B + LoRA | *running* | *running* | *running* | *running* |
 
 Held-out attacks are not in this table on purpose: some of them make detectors flag
 almost **every** text as AI, so a high detection rate there is meaningless without
-the false-positive rate. See the attack figure below.
+the false-positive rate. See the attack figure below. Binoculars has one run only:
+it has no training, so it has no seed to vary.
 
 ### Which unseen AI models are hard?
 
@@ -154,13 +173,57 @@ curl -o data/train.csv https://dataset.raid-bench.xyz/train.csv
 | Baseline + TF-IDF | `python src/train_classical.py` | laptop CPU | ~10 min |
 | RoBERTa: tune learning rate | `python src/train_roberta.py --seeds 42 --aug 0 --lrs 1e-5 2e-5 3e-5` | GPU (Kaggle T4) | ~1.3 h |
 | RoBERTa: main runs | `python src/train_roberta.py --lrs 2e-5` | GPU (Kaggle T4) | ~2.5 h |
-| Figures and tables | run `notebooks/01_eda.ipynb` → `02_results.ipynb` → `03_error_analysis.ipynb` | laptop | ~2 min |
+| Zero-shot Binoculars | `python src/zero_shot_binoculars.py` | 2× GPU (Kaggle T4 x2) | ~2 h |
+| LLM: tune learning rate | `python src/train_llm.py --seeds 42 --aug 0 --lrs 5e-5 1e-4 2e-4 --tune-only --out results/tuning` | GPU (Kaggle T4) | ~3 h |
+| LLM: main runs | `python src/train_llm.py --lrs 1e-4 --aug 0` then `--aug 0.5` | GPU (Kaggle T4) | ~5.5 h each |
+| Shortcut check: clean text | `python src/normalize_text.py` | laptop | ~1 min |
+| Shortcut check: TF-IDF clues | `python src/shortcut_features.py` | laptop | ~2 min |
+| Shortcut check: TF-IDF on clean text | `python src/train_classical.py --data data/processed_norm --out results/normalized --aug 0` | laptop | ~5 min |
+| Shortcut check: RoBERTa on clean text | `python src/train_roberta.py --data data/processed_norm --aug 0 --lrs 2e-5 --out results/normalized` | GPU (Kaggle T4) | ~1.5 h |
+| Figures and tables | run `notebooks/01_eda.ipynb` → `02_results.ipynb` → `03_error_analysis.ipynb` → `04_shortcuts.ipynb` | laptop | ~3 min |
 
-RoBERTa runs save after every run and skip finished runs, so an interrupted session
+The GPU steps can be run with the ready-made Kaggle notebooks
+`kaggle_llm_session1.ipynb`, `kaggle_llm_session2.ipynb` (run twice: `AUG = "0"`,
+then `AUG = "0.5"`) and `kaggle_normalized_roberta.ipynb`. The LLM scripts need
+`pip install peft`; on Kaggle, uninstall the preinstalled `torchao` first. RoBERTa and LLM runs save after every run and skip finished runs, so an interrupted session
 can simply be restarted. A quick check before the long run:
 `python src/train_roberta.py --limit 500 --seeds 42 --aug 0 --epochs 1 --out results/smoke`
 
 ---
+
+## Is 99.5% too good to be true? The shortcut check
+
+Very high detection scores can come from **shortcuts**: surface clues such as layout,
+line breaks or unusual characters, rather than writing style. Two checks test this:
+
+1. **What does the model rely on?** The strongest TF-IDF clues and the formatting
+   differences between human and AI text (`shortcut_features.py`).
+2. **Remove the clues and retrain.** Every text is normalised (no line breaks or blank
+   lines, no invisible or broken characters, look-alike letters mapped back, no HTML
+   leftovers or markdown markers) and the detectors are trained and tested again. A big
+   drop means part of the original score was a shortcut. On the attacked sets the same
+   cleaning also acts as a simple, training-free defence.
+
+**What the training data shows:**
+
+| Clue | Human texts | AI texts | Kind of clue |
+|---|---:|---:|---|
+| Contains a blank line | **0%** | 70–100% | formatting shortcut |
+| Contains list lines (`-`, `1.`) | 1.2% | 2–15% | formatting shortcut |
+| Contains non-ASCII characters | 30.2% | 12–20% | mostly scraping leftovers |
+
+Strongest TF-IDF clues: towards **AI**, markdown (`##`, `1.`, ` > `) and prompt words
+(*ingredients*, *instructions*, *the paper*, *the film*); towards **human**, HTML leftovers
+(`br`), broken characters (`�`), `...`, and common function words (*in, and, at, of, to*),
+the last of which are genuine style differences.
+
+**After cleaning (TF-IDF word+char, TPR at 5% FPR):** seen 82.1 → 80.9, held-out
+generators 85.1 → 84.0, repetition penalty 49.6 → 47.1. Held-out attacks: 80.9, now
+exactly equal to clean text, because cleaning undoes those attacks completely.
+
+![Effect of removing formatting clues](results/figures/normalisation_effect.png)
+
+![Cleaning as a defence against held-out attacks](results/figures/normalisation_defence.png)
 
 ## Design choices that keep the results honest
 
@@ -180,6 +243,8 @@ can simply be restarted. A quick check before the long run:
 | Simple baseline | log word count + repeated-word ratio → standardised → logistic regression |
 | TF-IDF | word 1–2-grams (+ character 3–5-grams); max 200k features each; sublinear TF; logistic regression, C ∈ {0.1, 1, 10} |
 | RoBERTa-base | max 512 tokens; AdamW (weight decay 0.01); lr ∈ {1e-5, 2e-5, 3e-5} (2e-5 chosen); batch 16 (8 × 2 accumulation); 6% warm-up; up to 2 epochs, best by validation AUROC; fp16 on GPU |
+| Qwen2.5-0.5B + LoRA | classification head on the last token; LoRA r = 16, α = 32, dropout 0.05 on all attention and MLP projections (~2% of weights trained); AdamW; lr ∈ {5e-5, 1e-4, 2e-4} tuned on validation only; otherwise as RoBERTa |
+| Binoculars (zero-shot) | observer Qwen2.5-1.5B, performer Qwen2.5-1.5B-Instruct (the paper uses Falcon-7B); score = log-perplexity / cross-perplexity; no training; threshold at 5% validation FPR like the other detectors |
 
 ---
 
@@ -190,6 +255,10 @@ can simply be restarted. A quick check before the long run:
   specific to MPT.
 - RAID's **paraphrase** attack rewrites human texts with an AI paraphraser, so some
   "human" texts are partly machine-written. The label itself is debatable there.
+- Binoculars uses a smaller **Qwen2.5-1.5B** model pair to fit a free GPU; the original
+  paper uses Falcon-7B, so a larger pair may score higher.
+- Text cleaning removes markdown and lists, which are partly genuine AI style, so the
+  cleaned results are a **lower bound** on what style alone can achieve.
 - About **10% of texts** (and up to 47% of texts with character attacks) are cut at
   RoBERTa's 512-token limit.
 - TF-IDF ran on a laptop CPU and RoBERTa on a cloud GPU, so training times are not
@@ -208,11 +277,16 @@ can simply be restarted. A quick check before the long run:
 │   ├── metrics.py            # TPR at 5% FPR, AUROC, macro-F1
 │   ├── train_classical.py    # simple baseline + TF-IDF experiments
 │   ├── train_roberta.py      # RoBERTa experiments (GPU)
+│   ├── train_llm.py          # LoRA fine-tuned LLM experiments (GPU)
+│   ├── zero_shot_binoculars.py  # zero-shot LLM detector (GPU)
+│   ├── normalize_text.py     # removes layout / invisible / look-alike characters
+│   ├── shortcut_features.py  # TF-IDF top clues + formatting statistics
 │   └── report_utils.py       # shared helpers for the notebooks
 ├── notebooks/
 │   ├── 01_eda.ipynb          # data exploration + leakage check
 │   ├── 02_results.ipynb      # result tables and figures
-│   └── 03_error_analysis.ipynb
+│   ├── 03_error_analysis.ipynb
+│   └── 04_shortcuts.ipynb    # original vs normalised text
 ├── results/
 │   ├── *_results.csv         # every metric, every run
 │   ├── *_efficiency.csv      # training time, speed, model size
@@ -231,5 +305,10 @@ can simply be restarted. A quick check before the long run:
   [Data and code](https://github.com/liamdugan/raid)
 - Y. Liu *et al.*, "RoBERTa: A robustly optimized BERT pretraining approach,"
   arXiv:1907.11692, 2019.
-
+- E. J. Hu *et al.*, "LoRA: Low-rank adaptation of large language models," *ICLR 2022*.
+- A. Hans *et al.*, "Spotting LLMs with Binoculars: Zero-shot detection of
+  machine-generated text," *ICML 2024*.
+- Qwen Team, "Qwen2.5 technical report," arXiv:2412.15115, 2024.
+- J. Kirchenbauer *et al.*, "A watermark for large language models," *ICML 2023*
+  (the watermark-based alternative, discussed but not used here).
 

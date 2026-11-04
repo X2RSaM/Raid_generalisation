@@ -1,0 +1,2 @@
+model,aug,seed,val_auroc,threshold,train_time_s,infer_texts_per_s,model_size_mb,n_params,observer,performer
+binoculars,0.0,42,0.9395488721804512,-0.9289635181427002,0.0,7.070998404662235,6174.857216,3087428608,Qwen/Qwen2.5-1.5B,Qwen/Qwen2.5-1.5B-Instruct

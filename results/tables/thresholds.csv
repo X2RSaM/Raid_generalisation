@@ -1,0 +1,8 @@
+detector,aug,seed,best_epoch,threshold,val_auroc
+Binoculars (zero-shot),0.0,42,,-0.9378,0.9389
+RoBERTa,0.0,42,2.0,0.9545,0.9979
+RoBERTa,0.0,43,1.0,0.004,0.9982
+RoBERTa,0.0,44,2.0,0.3471,0.998
+RoBERTa,0.5,42,2.0,0.9725,0.9979
+RoBERTa,0.5,43,2.0,0.9891,0.9975
+RoBERTa,0.5,44,2.0,0.9565,0.9983

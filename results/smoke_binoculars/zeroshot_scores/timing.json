@@ -1,0 +1,26 @@
+{
+ "val": {
+  "seconds": 28.60162003800002,
+  "texts": 200
+ },
+ "test_seen": {
+  "seconds": 28.284548879,
+  "texts": 200
+ },
+ "test_unseen": {
+  "seconds": 31.607454604999987,
+  "texts": 200
+ },
+ "test_reppen": {
+  "seconds": 30.20121911199999,
+  "texts": 200
+ },
+ "test_seen_attacks": {
+  "seconds": 31.41802029400003,
+  "texts": 200
+ },
+ "test_heldout_attacks": {
+  "seconds": 45.202662812000085,
+  "texts": 200
+ }
+}

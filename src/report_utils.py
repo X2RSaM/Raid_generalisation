@@ -14,8 +14,11 @@ import pandas as pd
 # Names and experimental design (must match make_splits.py)
 # ---------------------------------------------------------------------------
 DETECTOR_NAMES = {"baseline": "Baseline", "tfidf_word": "TF-IDF (word)",
-                  "tfidf_word_char": "TF-IDF (word+char)", "roberta-base": "RoBERTa"}
+                  "tfidf_word_char": "TF-IDF (word+char)", "roberta-base": "RoBERTa",
+                  "Qwen2.5-0.5B": "Qwen2.5 (LoRA)", "binoculars": "Binoculars (zero-shot)"}
 DETECTOR_ORDER = list(DETECTOR_NAMES.values())
+FIGURE_KEYS = ["tfidf_word_char", "roberta-base", "Qwen2.5-0.5B", "binoculars"]
+TRAINED_KEYS = ["tfidf_word_char", "roberta-base", "Qwen2.5-0.5B"]  # have augmentation runs
 
 CONDITION_NAMES = {"test_seen": "Seen gen.", "test_unseen": "Held-out gen.",
                    "test_reppen": "Rep. penalty", "test_seen_attacks": "Seen attacks",
@@ -38,11 +41,15 @@ HELDOUT_ATTACKS = ["homoglyph", "zero_width_space", "whitespace",
 # Figure style (validated categorical colours; IEEE column widths in inches)
 # ---------------------------------------------------------------------------
 INK, INK2, MUTED, GRID, AXIS = "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#c3c2b7"
-COLORS = {"Baseline": "#1baf7a", "TF-IDF (word)": "#6250d6",
-          "TF-IDF (word+char)": "#2a78d6", "RoBERTa": "#eb6834"}
-HATCH = {"RoBERTa": "////"}            # texture so the figures also work in greyscale
-MARKERS = {"TF-IDF (word+char)": "o", "RoBERTa": "s", "Baseline": "^", "TF-IDF (word)": "D"}
-PAIR = ("#1baf7a", "#6250d6")          # two non-detector series (e.g. human vs AI)
+# Plotted detectors, in figure order, pass the adjacent-pair colour-blind check:
+# blue, orange, violet, green. Baseline and TF-IDF (word) only appear in tables.
+COLORS = {"TF-IDF (word+char)": "#2a78d6", "RoBERTa": "#eb6834",
+          "Qwen2.5 (LoRA)": "#6250d6", "Binoculars (zero-shot)": "#008300",
+          "Baseline": "#e87ba4", "TF-IDF (word)": "#eda100"}
+HATCH = {"RoBERTa": "////", "Qwen2.5 (LoRA)": "\\\\\\\\", "Binoculars (zero-shot)": "...."}
+MARKERS = {"TF-IDF (word+char)": "o", "RoBERTa": "s", "Qwen2.5 (LoRA)": "D",
+           "Binoculars (zero-shot)": "v", "Baseline": "^", "TF-IDF (word)": "P"}
+PAIR = ("#1baf7a", "#e34948")          # two non-detector series (seen/held-out, human/AI)
 COL_W, PAGE_W = 3.5, 7.16
 
 
@@ -124,22 +131,55 @@ def save_table(df, name, tab_dir, caption="", index=True):
 # ---------------------------------------------------------------------------
 # Results and predictions
 # ---------------------------------------------------------------------------
-def chosen_lr(roberta_eff):
-    """Learning rate with the best validation AUROC in the tuning runs."""
-    tune = roberta_eff[(roberta_eff["aug"] == 0) & (roberta_eff["seed"] == 42)]
+def chosen_lr(eff):
+    """Learning rate with the best validation AUROC (seed 42, no augmentation)."""
+    tune = eff[(eff["aug"] == 0) & (eff["seed"] == 42)]
     return float(tune.loc[tune["val_auroc"].idxmax(), "lr"])
 
 
+def tuning_runs(res_dir, prefix):
+    """Learning-rate tuning runs: results/tuning/ if it exists, else the main file."""
+    for path in [res_dir / "tuning" / f"{prefix}_efficiency.csv",
+                 res_dir / f"{prefix}_efficiency.csv"]:
+        if path.exists():
+            return pd.read_csv(path)
+    return None
+
+
 def load_results(res_dir):
-    """Classical + RoBERTa results; RoBERTa restricted to the validation-chosen lr."""
-    cl = pd.read_csv(res_dir / "classical_results.csv")
-    rb = pd.read_csv(res_dir / "roberta_results.csv")
-    best_lr = chosen_lr(pd.read_csv(res_dir / "roberta_efficiency.csv"))
-    rb = rb[np.isclose(rb["lr"], best_lr)]
-    df = pd.concat([cl, rb], ignore_index=True)
-    df["detector"] = df["model"].map(DETECTOR_NAMES)
+    """All detectors' results; neural models restricted to the validation-chosen lr.
+
+    Returns (results, lrs) where lrs maps model key -> chosen learning rate.
+    Missing result files (e.g. before the LLM runs) are simply skipped.
+    """
+    parts, lrs = [pd.read_csv(res_dir / "classical_results.csv")], {}
+    for prefix in ["roberta", "llm"]:
+        path = res_dir / f"{prefix}_results.csv"
+        if not path.exists():
+            continue
+        df = pd.read_csv(path)
+        lr = chosen_lr(tuning_runs(res_dir, prefix))
+        if not np.isclose(df["lr"], lr).any():   # chosen lr not run yet: use what exists
+            lr = float(df["lr"].mode()[0])
+        df = df[np.isclose(df["lr"], lr)]
+        lrs.update({m: lr for m in df["model"].unique()})
+        parts.append(df)
+    if (res_dir / "zeroshot_results.csv").exists():
+        parts.append(pd.read_csv(res_dir / "zeroshot_results.csv"))
+    df = pd.concat(parts, ignore_index=True)
+    df["detector"] = df["model"].map(DETECTOR_NAMES).fillna(df["model"])
     df["condition_name"] = df["condition"].map(CONDITION_NAMES)
-    return df, best_lr
+    return df, lrs
+
+
+def detector_order(df):
+    """Detectors present in the results, in report order."""
+    present = set(df["detector"])
+    return [d for d in DETECTOR_ORDER if d in present]
+
+
+def keys_present(df, keys):
+    return [k for k in keys if k in set(df["model"])]
 
 
 def summarise(df, by, metric):
@@ -148,8 +188,11 @@ def summarise(df, by, metric):
 
 
 def pred_file(res_dir, key, condition, aug=0.0, seed=42, lr=None):
-    """Path of a per-text prediction file written by the training scripts."""
-    if key == "roberta-base":
+    """Path of a per-text prediction file written by the training scripts.
+
+    Neural models include the learning rate in the name (pass lr=lrs[key]).
+    """
+    if lr is not None:
         return res_dir / "predictions" / f"{key}_aug{float(aug)}_lr{lr}_seed{seed}_{condition}.parquet"
     return res_dir / "predictions" / f"{key}_aug{float(aug)}_seed{seed}_{condition}.parquet"
 

@@ -1,0 +1,17 @@
+\begin{table}[!t]
+\centering
+\caption{Held-out attacks before and after normalisation: FPR on attacked human texts and TPR (\%)}
+\label{tab:normalisation_defence}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Detector} & \textbf{Attack} & \textbf{FPR original} & \textbf{FPR normalised} & \textbf{TPR original} & \textbf{TPR normalised} \\
+\midrule
+TF-IDF (word+char) & homoglyph & 74.8 & 4.6 & 96.5 & 80.9 \\
+TF-IDF (word+char) & zero width space & 100.0 & 4.6 & 100.0 & 80.9 \\
+TF-IDF (word+char) & whitespace & 5.1 & 4.6 & 82.1 & 80.9 \\
+TF-IDF (word+char) & upper lower & 5.1 & 4.6 & 82.1 & 80.9 \\
+TF-IDF (word+char) & insert paragraphs & 5.1 & 4.6 & 82.1 & 80.9 \\
+\bottomrule
+\end{tabular}
+\end{table}

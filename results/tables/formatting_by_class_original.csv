@@ -1,0 +1,3 @@
+class,has_line_break,line_breaks_per_100_words,has_blank_line,has_list_lines,has_non_ascii,words
+AI,82.7,7.67,79.6,11.0,17.2,233.0
+human,61.1,3.83,0.0,1.2,30.2,293.0

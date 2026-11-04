@@ -1,12 +1,12 @@
-attack,In training aug.,TF-IDF (word+char) TPR,TF-IDF (word+char) FPR,TF-IDF (word+char) AUROC,RoBERTa TPR,RoBERTa FPR,RoBERTa AUROC
-article_deletion,yes,80.4,4.2,96.0,99.0,1.3,99.8
-number,yes,82.3,5.1,96.1,99.4,4.0,99.9
-paraphrase,yes,73.6,13.7,87.4,81.5,32.5,77.9
-synonym,yes,75.8,4.8,94.5,99.0,1.9,99.8
-perplexity_misspelling,yes,82.2,5.0,96.1,98.9,2.2,99.8
-alternative_spelling,yes,81.2,4.8,96.0,99.4,2.7,99.8
-homoglyph,no,96.5,74.8,81.6,82.3,10.0,94.3
-zero_width_space,no,100.0,100.0,50.0,94.9,89.2,68.5
-whitespace,no,82.1,5.1,96.1,98.8,1.2,99.8
-upper_lower,no,82.1,5.1,96.1,99.0,1.5,99.8
-insert_paragraphs,no,82.1,5.1,96.1,99.9,97.1,93.4
+attack,In training aug.,TF-IDF (word+char) TPR,TF-IDF (word+char) FPR,TF-IDF (word+char) AUROC,RoBERTa TPR,RoBERTa FPR,RoBERTa AUROC,Binoculars (zero-shot) TPR,Binoculars (zero-shot) FPR,Binoculars (zero-shot) AUROC
+article_deletion,yes,80.4,4.2,96.0,99.0,1.3,99.8,67.4,1.5,93.0
+number,yes,82.3,5.1,96.1,99.4,4.0,99.9,70.9,3.6,89.6
+paraphrase,yes,73.6,13.7,87.4,81.5,32.5,77.9,83.6,41.1,82.7
+synonym,yes,75.8,4.8,94.5,99.0,1.9,99.8,32.2,0.2,83.7
+perplexity_misspelling,yes,82.2,5.0,96.1,98.9,2.2,99.8,75.8,4.0,93.1
+alternative_spelling,yes,81.2,4.8,96.0,99.4,2.7,99.8,75.2,4.0,92.6
+homoglyph,no,96.5,74.8,81.6,82.3,10.0,94.3,35.5,9.8,70.6
+zero_width_space,no,100.0,100.0,50.0,94.9,89.2,68.5,59.3,24.8,73.9
+whitespace,no,82.1,5.1,96.1,98.8,1.2,99.8,59.8,0.7,91.4
+upper_lower,no,82.1,5.1,96.1,99.0,1.5,99.8,61.2,1.1,91.0
+insert_paragraphs,no,82.1,5.1,96.1,99.9,97.1,93.4,72.9,4.3,91.4

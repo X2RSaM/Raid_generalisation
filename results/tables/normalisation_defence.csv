@@ -1,0 +1,6 @@
+Detector,Attack,FPR original,FPR normalised,TPR original,TPR normalised
+TF-IDF (word+char),homoglyph,74.8,4.6,96.5,80.9
+TF-IDF (word+char),zero width space,100.0,4.6,100.0,80.9
+TF-IDF (word+char),whitespace,5.1,4.6,82.1,80.9
+TF-IDF (word+char),upper lower,5.1,4.6,82.1,80.9
+TF-IDF (word+char),insert paragraphs,5.1,4.6,82.1,80.9
