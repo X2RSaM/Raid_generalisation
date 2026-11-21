@@ -1,4 +1,6 @@
 detector,aug,Seen gen. TPR,Seen gen. AUROC,Seen attacks TPR,Seen attacks AUROC,Held-out attacks TPR,Held-out attacks AUROC
+Qwen2.5 (LoRA),0.0,99.8 ± 0.0,99.9 ± 0.0,97.5 ± 0.2,98.8 ± 0.2,99.2 ± 0.8,86.0 ± 2.7
+Qwen2.5 (LoRA),0.5,99.8 ± 0.0,100.0 ± 0.0,99.3 ± 0.1,99.6 ± 0.0,99.2 ± 0.8,88.3 ± 1.1
 RoBERTa,0.0,99.5 ± 0.0,99.9 ± 0.0,96.2 ± 0.6,98.4 ± 0.1,95.0 ± 1.5,88.9 ± 0.5
 RoBERTa,0.5,99.4 ± 0.2,99.9 ± 0.0,98.4 ± 0.2,99.4 ± 0.0,91.4 ± 1.6,88.2 ± 1.5
 TF-IDF (word+char),0.0,82.1 ± 0.0,96.1 ± 0.0,79.2 ± 0.0,94.6 ± 0.0,88.6 ± 0.0,82.5 ± 0.0

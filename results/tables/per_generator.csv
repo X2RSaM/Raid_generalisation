@@ -1,12 +1,12 @@
-generator,Split,Type,TF-IDF (word+char),RoBERTa,Binoculars (zero-shot)
-cohere,seen,base,64.8,98.9,71.5
-gpt2,seen,base,81.5,99.6,83.8
-gpt3,seen,base,83.4,100.0,91.9
-mistral,seen,base,68.5,98.3,76.2
-chatgpt,seen,chat,96.9,100.0,72.2
-cohere-chat,seen,chat,81.0,99.0,75.7
-mistral-chat,seen,chat,97.1,100.0,88.3
-mpt,held-out,base,68.3,91.1,82.9
-gpt4,held-out,chat,80.7,100.0,40.5
-llama-chat,held-out,chat,96.6,100.0,85.8
-mpt-chat,held-out,chat,95.9,99.8,88.9
+generator,Split,Type,TF-IDF (word+char),RoBERTa,Qwen2.5 (LoRA),Binoculars (zero-shot)
+cohere,seen,base,64.8,98.9,99.3,71.5
+gpt2,seen,base,81.5,99.6,100.0,83.8
+gpt3,seen,base,83.4,100.0,100.0,91.9
+mistral,seen,base,68.5,98.3,99.0,76.2
+chatgpt,seen,chat,96.9,100.0,100.0,72.2
+cohere-chat,seen,chat,81.0,99.0,100.0,75.7
+mistral-chat,seen,chat,97.1,100.0,100.0,88.3
+mpt,held-out,base,68.3,91.1,92.7,82.9
+gpt4,held-out,chat,80.7,100.0,100.0,40.5
+llama-chat,held-out,chat,96.6,100.0,100.0,85.8
+mpt-chat,held-out,chat,95.9,99.8,100.0,88.9

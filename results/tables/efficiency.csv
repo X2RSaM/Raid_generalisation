@@ -3,4 +3,5 @@ Baseline,arm64 CPU (10 cores),0.3,64257,0.0,2,2
 TF-IDF (word),arm64 CPU (10 cores),4.5,8621,31.89,"200,000","200,000"
 TF-IDF (word+char),arm64 CPU (10 cores),18.0,1618,45.94,"400,000","400,000"
 RoBERTa,Tesla T4,1087.7,185,498.59,"124,647,170","124,647,170"
+Qwen2.5 (LoRA),Tesla T4,3929.4,35,2011.34,"502,834,560","8,800,000"
 Binoculars (zero-shot),Tesla T4 + Tesla T4,0.0,6,6174.86,"3,087,428,608",0

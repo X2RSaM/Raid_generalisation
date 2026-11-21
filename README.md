@@ -50,7 +50,9 @@ measuring how predictable the text is to an LLM (Binoculars).
 | 🔀 | **Trained and zero-shot detectors fail in opposite ways.** Trained detectors learn dataset shortcuts (inserted blank lines make RoBERTa flag 97% of human texts; Binoculars only 4%). Binoculars instead fails when text is made *less predictable*: repetition penalty (42.9%), synonym swaps (32.2%), homoglyphs (35.5%). |
 | 🧩 | **Part of the very high scores rests on dataset shortcuts.** No human training text contains a blank line, but 70–100% of AI texts do; markdown (`##`, `1.`) points to AI, and scraping leftovers (`<br />`, broken `�` characters) point to human. |
 | 🧹 | **Removing these clues barely changes TF-IDF** (82.1% → 80.9%), so it mostly uses real wording, and it **fully neutralises the held-out attacks** for TF-IDF at no training cost, unlike augmentation. The same check for RoBERTa is in progress. |
-| 🧪 | **In progress:** a LoRA fine-tuned Qwen2.5-0.5B (learning rate 1e-4 chosen on validation; main runs on Kaggle) and RoBERTa retrained on cleaned text. |
+| 🧠 | **A larger LLM (Qwen2.5-0.5B + LoRA) is only slightly more accurate than RoBERTa** (99.8% vs 99.5% seen, 98.5% vs 98.0% held-out) at about 3.6× the training time and 5× slower prediction, and it is **even more fooled by look-alike letters** (73% of human texts flagged vs 10% for RoBERTa). Model size does not fix the shortcuts. |
+| 🔁 | **Augmentation behaves the same for Qwen as for RoBERTa:** it helps on the attacks it trained on (paraphrase AUROC 0.80 → 0.94) but not on held-out attacks (AUROC 0.86 → 0.88; homoglyph, zero-width and paragraph attacks still flag most human texts). |
+| 🧪 | **In progress:** RoBERTa retrained on cleaned text. |
 | 💻 | **RoBERTa's accuracy has a real cost**: ~18 min of GPU training and a 499 MB model, vs about a minute on a laptop CPU for TF-IDF. Fine-tuning RoBERTa did not fit in a 16 GB laptop's memory. |
 
 ---
@@ -102,7 +104,7 @@ accusing a person of using AI is the costly mistake, so it is the one we control
 | TF-IDF (word+char) | 82.1 | 85.1 | 49.6 | 79.2 |
 | **RoBERTa** | **99.5** | **98.0** | **90.5** | **96.2** |
 | Binoculars (zero-shot, no training) | 79.9 | 74.0 | 42.9 | 67.5 |
-| Qwen2.5-0.5B + LoRA | *running* | *running* | *running* | *running* |
+| Qwen2.5-0.5B + LoRA | 99.8 | 98.5 | 92.0 | 97.5 |
 
 Held-out attacks are not in this table on purpose: some of them make detectors flag
 almost **every** text as AI, so a high detection rate there is meaningless without
@@ -182,9 +184,12 @@ curl -o data/train.csv https://dataset.raid-bench.xyz/train.csv
 | Shortcut check: RoBERTa on clean text | `python src/train_roberta.py --data data/processed_norm --aug 0 --lrs 2e-5 --out results/normalized` | GPU (Kaggle T4) | ~1.5 h |
 | Figures and tables | run `notebooks/01_eda.ipynb` → `02_results.ipynb` → `03_error_analysis.ipynb` → `04_shortcuts.ipynb` | laptop | ~3 min |
 
-The GPU steps can be run with the ready-made Kaggle notebooks
-`kaggle_llm_session1.ipynb`, `kaggle_llm_session2.ipynb` (run twice: `AUG = "0"`,
-then `AUG = "0.5"`) and `kaggle_normalized_roberta.ipynb`. The LLM scripts need
+The GPU steps were run with the Kaggle notebooks in [`kaggle/`](kaggle/), saved
+with their logs: `kaggle_roberta.ipynb`, `kaggle_llm_session1.ipynb`,
+`kaggle_llm_session2a.ipynb` (`AUG = "0"`), `kaggle_llm_session2b.ipynb` (`AUG = "0.5"`) and
+`kaggle_normalized_roberta.ipynb`. To rerun one, upload `data/processed/*.parquet`
+and `src/*.py` as a private Kaggle dataset, import the notebook, add the dataset as
+input, and enable a GPU and internet access. The LLM scripts need
 `pip install peft`; on Kaggle, uninstall the preinstalled `torchao` first. RoBERTa and LLM runs save after every run and skip finished runs, so an interrupted session
 can simply be restarted. A quick check before the long run:
 `python src/train_roberta.py --limit 500 --seeds 42 --aug 0 --epochs 1 --out results/smoke`
@@ -282,6 +287,12 @@ exactly equal to clean text, because cleaning undoes those attacks completely.
 │   ├── normalize_text.py     # removes layout / invisible / look-alike characters
 │   ├── shortcut_features.py  # TF-IDF top clues + formatting statistics
 │   └── report_utils.py       # shared helpers for the notebooks
+├── kaggle/                   # GPU notebooks as run on Kaggle (with logs)
+│   ├── kaggle_roberta.ipynb
+│   ├── kaggle_llm_session1.ipynb  # Binoculars + Qwen learning-rate tuning
+│   ├── kaggle_llm_session2a.ipynb # Qwen main runs, no augmentation
+│   ├── kaggle_llm_session2b.ipynb # Qwen main runs, 50% augmentation
+│   └── kaggle_normalized_roberta.ipynb
 ├── notebooks/
 │   ├── 01_eda.ipynb          # data exploration + leakage check
 │   ├── 02_results.ipynb      # result tables and figures
@@ -312,3 +323,7 @@ exactly equal to clean text, because cleaning undoes those attacks completely.
 - J. Kirchenbauer *et al.*, "A watermark for large language models," *ICML 2023*
   (the watermark-based alternative, discussed but not used here).
 
+## AI usage
+
+Code in this repository was produced with the help of Claude (Anthropic), as declared
+on the project's AI acknowledgement cover sheet.

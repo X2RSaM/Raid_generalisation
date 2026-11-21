@@ -1,0 +1,44 @@
+{
+ "device": "cuda",
+ "gpu": "Tesla T4",
+ "torch": "2.11.0+cu130",
+ "transformers": "5.20.2",
+ "python": "3.13.16",
+ "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+ "data": "data/processed",
+ "out": "results",
+ "model_name": "Qwen/Qwen2.5-0.5B",
+ "aug": [
+  0.5
+ ],
+ "seeds": [
+  42,
+  43,
+  44
+ ],
+ "lrs": [
+  0.0001
+ ],
+ "epochs": 2,
+ "batch": 8,
+ "accum": 2,
+ "eval_batch": 32,
+ "max_len": 512,
+ "lora_r": 16,
+ "lora_alpha": 32,
+ "lora_dropout": 0.05,
+ "lora_targets": [
+  "q_proj",
+  "k_proj",
+  "v_proj",
+  "o_proj",
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "grad_ckpt": false,
+ "no_amp": false,
+ "limit": 0,
+ "log_every": 50,
+ "tune_only": false
+}
