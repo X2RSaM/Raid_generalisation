@@ -49,10 +49,11 @@ measuring how predictable the text is to an LLM (Binoculars).
 | 🔭 | **A zero-shot LLM detector (Binoculars) catches 79.9% of AI texts with no training at all**, close to TF-IDF (82.1%) but far below RoBERTa. |
 | 🔀 | **Trained and zero-shot detectors fail in opposite ways.** Trained detectors learn dataset shortcuts (inserted blank lines make RoBERTa flag 97% of human texts; Binoculars only 4%). Binoculars instead fails when text is made *less predictable*: repetition penalty (42.9%), synonym swaps (32.2%), homoglyphs (35.5%). |
 | 🧩 | **Part of the very high scores rests on dataset shortcuts.** No human training text contains a blank line, but 70–100% of AI texts do; markdown (`##`, `1.`) points to AI, and scraping leftovers (`<br />`, broken `�` characters) point to human. |
-| 🧹 | **Removing these clues barely changes TF-IDF** (82.1% → 80.9%), so it mostly uses real wording, and it **fully neutralises the held-out attacks** for TF-IDF at no training cost, unlike augmentation. The same check for RoBERTa is in progress. |
+| 🧹 | **Removing these clues barely changes TF-IDF** (82.1% → 80.9%), so it mostly uses real wording, and it **fully neutralises the held-out attacks** for TF-IDF at no training cost, unlike augmentation. |
+| 🧽 | **RoBERTa relies on the clues more:** after cleaning it drops from 99.5% to 96.2% (seen) and from 90.5% to 77.9% (repetition penalty), so about 3 points of its seen score were formatting shortcuts. It is **still far ahead of TF-IDF** (96.2% vs 80.9%), so most of its skill is real writing style. |
+| 🩹 | **Cleaning fixes RoBERTa's held-out attack failures** where augmentation could not: human texts wrongly flagged fall from 97% to 4.7% for inserted paragraphs and from 89% to 4.7% for zero-width spaces. |
 | 🧠 | **A larger LLM (Qwen2.5-0.5B + LoRA) is only slightly more accurate than RoBERTa** (99.8% vs 99.5% seen, 98.5% vs 98.0% held-out) at about 3.6× the training time and 5× slower prediction, and it is **even more fooled by look-alike letters** (73% of human texts flagged vs 10% for RoBERTa). Model size does not fix the shortcuts. |
 | 🔁 | **Augmentation behaves the same for Qwen as for RoBERTa:** it helps on the attacks it trained on (paraphrase AUROC 0.80 → 0.94) but not on held-out attacks (AUROC 0.86 → 0.88; homoglyph, zero-width and paragraph attacks still flag most human texts). |
-| 🧪 | **In progress:** RoBERTa retrained on cleaned text. |
 | 💻 | **RoBERTa's accuracy has a real cost**: ~18 min of GPU training and a 499 MB model, vs about a minute on a laptop CPU for TF-IDF. Fine-tuning RoBERTa did not fit in a 16 GB laptop's memory. |
 
 ---
@@ -222,9 +223,25 @@ Strongest TF-IDF clues: towards **AI**, markdown (`##`, `1.`, ` > `) and prompt 
 (`br`), broken characters (`�`), `...`, and common function words (*in, and, at, of, to*),
 the last of which are genuine style differences.
 
-**After cleaning (TF-IDF word+char, TPR at 5% FPR):** seen 82.1 → 80.9, held-out
-generators 85.1 → 84.0, repetition penalty 49.6 → 47.1. Held-out attacks: 80.9, now
-exactly equal to clean text, because cleaning undoes those attacks completely.
+**After cleaning (TPR at 5% FPR, mean of 3 seeds):**
+
+| Detector | Text | Seen | Held-out generators | Repetition penalty | Seen attacks | Held-out attacks |
+|---|---|---:|---:|---:|---:|---:|
+| TF-IDF word+char | original | 82.1 | 85.1 | 49.6 | 79.2 | — |
+| TF-IDF word+char | cleaned | 80.9 | 84.0 | 47.1 | 77.9 | 80.9 |
+| RoBERTa | original | 99.5 | 98.0 | 90.5 | 96.2 | — |
+| RoBERTa | cleaned | 96.2 | 97.6 | 77.9 | 92.6 | 94.8 |
+
+— = not a fair comparison: on the original text these attacks make the detectors flag
+most human texts, so the AI catch rate looks high for the wrong reason.
+
+TF-IDF hardly changes, so it mostly uses real wording. RoBERTa loses about 3 points on
+seen generators and 12.6 points under repetition penalty, so it leaned on the layout
+clues more. Cleaning also undoes four of the five held-out attacks completely (homoglyph,
+zero-width space, whitespace, inserted paragraphs): RoBERTa's false-positive rate on them
+falls from up to 97% to 4.7%, the same as on clean text. Only upper/lower case is not
+undone, because cleaning keeps letter case. RoBERTa on cleaned text trains in ~17 min on
+a T4.
 
 ![Effect of removing formatting clues](results/figures/normalisation_effect.png)
 
@@ -323,7 +340,3 @@ exactly equal to clean text, because cleaning undoes those attacks completely.
 - J. Kirchenbauer *et al.*, "A watermark for large language models," *ICML 2023*
   (the watermark-based alternative, discussed but not used here).
 
-## AI usage
-
-Code in this repository was produced with the help of Claude (Anthropic), as declared
-on the project's AI acknowledgement cover sheet.
